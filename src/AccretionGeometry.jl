@@ -13,6 +13,7 @@ using StaticArrays
 include("geometry.jl")
 include("meshes.jl")
 include("intersections.jl")
+include("discs.jl")
 
 function tracegeodesics(
     m::AbstractMetricParams{T},
@@ -47,10 +48,13 @@ add_collision_callback(callback, accretion_geometry) = (callback, build_collisio
 
 function build_collision_callback(geometry::AbstractAccretionGeometry{T}) where {T}
     DiscreteCallback(
-        collision_callback(geometry)
+        collision_callback(geometry),
         i->terminate!(i, :Intersected)
     )
 end
+
+collision_callback(m::AbstractAccretionGeometry{T}) where {T} = (u, λ, integrator) -> intersects_geometry(m, line_element(u, integrator))
+
 
 export tracegeodesics, rendergeodesics
 

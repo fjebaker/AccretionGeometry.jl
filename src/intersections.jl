@@ -1,10 +1,13 @@
 
-function intersects_geometry(m::AbstractAccretionDisc{T}, line_element) where {T}
+function intersects_geometry(m::AbstractAccretionGeometry{T}, line_element) where {T}
     if in_nearby_region(m, line_element)
         return has_intersect(m, line_element)
     end
     false
 end 
+
+in_nearby_region(d::AbstractAccretionGeometry{T}, line_element) where {T} = error("Not implemented for $(typeof(d))")
+has_intersect(d::AbstractAccretionGeometry{T}, line_element) where {T} = error("Not implemented for $(typeof(d))")
 
 # Jiménez, Segura, Feito. Computation Geometry 43 (2010) 474-492
 function jsr_algorithm(V₁::T, V₂::T, V₃::T, Q₁::V, Q₂::V; ϵ=1e-6) where {T, V}

@@ -10,10 +10,14 @@ function to_cartesian(r, ϕ, θ)
     (r * sinϕ * cos(θ), r * sinϕ * sin(θ), r * cos(ϕ))
 end
 
-function line_element(u::ArrayPartition{F,T}, integator) where {F,T}
-    (to_cartesian(integator.uprev.x[2]), to_cartesian(u.x[2]))
+function cartesian_line_element(u::ArrayPartition{F,T}, integrator) where {F,T}
+    (to_cartesian(integrator.uprev.x[2]), to_cartesian(u.x[2]))
 end
 
-function line_element(u, integator)
-    (to_cartesian(integator.uprev), to_cartesian(u))
+function cartesian_line_element(u, integrator)
+    (to_cartesian(integrator.uprev), to_cartesian(u))
+end
+
+function line_element(u, integrator)
+    (integrator.uprev, u)
 end
