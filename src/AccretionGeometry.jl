@@ -1,9 +1,11 @@
 module AccretionGeometry
 
-import GeodesicTracer: tracegeodesics, DiscreteCallback
+import GeodesicTracer: tracegeodesics, DiscreteCallback, terminate!
 import GeodesicRendering: rendergeodesics
 import Base: in
+import RecursiveArrayTools: ArrayPartition
 import GeometryBasics
+import LinearAlgebra: ×, ⋅
 
 using GeodesicBase
 using StaticArrays
@@ -39,12 +41,17 @@ function rendergeodesics(
     rendergeodesics(m, init_pos, max_time; callback=cbs, kwargs...)
 end
 
-add_collision_callback(::Nothing, accretion_geometry) = collision_callback(accretion_geometry)
-add_collision_callback(callback, accretion_geometry) = (callback..., collision_callback(accretion_geometry))
+add_collision_callback(::Nothing, accretion_geometry) = build_collision_callback(accretion_geometry)
+add_collision_callback(callback::Base.AbstractVecOrTuple, accretion_geometry) = (callback..., build_collision_callback(accretion_geometry))
+add_collision_callback(callback, accretion_geometry) = (callback, build_collision_callback(accretion_geometry))
 
-collision_callback(geometry) = DiscreteCallback(
-    (u, λ, integrator) -> intersects_geometry(geometry, line_element(u, integrator)),
-    i->terminate!(i, retcode=:Intersected)
-)
+function build_collision_callback(geometry::AbstractAccretionGeometry{T}) where {T}
+    DiscreteCallback(
+        collision_callback(geometry)
+        i->terminate!(i, :Intersected)
+    )
+end
+
+export tracegeodesics, rendergeodesics
 
 end # module

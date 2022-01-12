@@ -1,23 +1,13 @@
 
-function intersects_geometry(m::MeshAccretionGeometry{T}, line_element) where {T}
-    if in_bounding_box(m, line_element)
-        #return has_intersect(m, line_element)
-        true
+function intersects_geometry(m::AbstractAccretionDisc{T}, line_element) where {T}
+    if in_nearby_region(m, line_element)
+        return has_intersect(m, line_element)
     end
     false
 end 
 
-function in_bounding_box(m::MeshAccretionGeometry{T}, line_element) where {T}
-    p = line_element[2]
-    @inbounds m.x_extent[1] < p[2] < m.x_extent[2] && m.y_extent[1] < p[3] < m.y_extent[2] && m.z_extent[1] < p[4] < m.z_extent[2]
-end 
-
-function has_intersect(m::MeshAccretionGeometry{T}, line_element) where {T}
-    any(triangle -> jsr_algorithm(triangle[1], triangle[2], triangle[3], line_element...), m)
-end
-
 # Jiménez, Segura, Feito. Computation Geometry 43 (2010) 474-492
-function jsr_algorithm(V₁, V₂, V₃, Q₁, Q₂; ϵ=1e-6)
+function jsr_algorithm(V₁::T, V₂::T, V₃::T, Q₁::V, Q₂::V; ϵ=1e-6) where {T, V}
     A = Q₁ .- V₃
     B = V₁ .- V₃
     C = V₂ .- V₃

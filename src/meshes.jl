@@ -1,13 +1,16 @@
 
-struct MeshAccretionGeometry{T,M} <: AbstractAccretionGeometry{T}
-    mesh::GeometryBasics.Mesh{3, T, M}
+struct MeshAccretionGeometry{T} <: AbstractAccretionGeometry{T}
+    mesh::Vector{Tuple{SVector{3,T}, SVector{3,T}, SVector{3,T}}}
     x_extent::Tuple{T,T}
     y_extent::Tuple{T,T}
     z_extent::Tuple{T,T}
 end
 
 function MeshAccretionGeometry(mesh)
-    MeshAccretionGeometry(mesh, bounding_box(mesh)...)
+    static_mesh = map(mesh) do triangle
+        Tuple(SVector(p[1], p[2], p[3]) for p in triangle)
+    end
+    MeshAccretionGeometry(static_mesh, bounding_box(mesh)...)
 end
 
 # naive implementation
@@ -29,3 +32,24 @@ function bounding_box(mesh::GeometryBasics.Mesh{3, T}) where {T}
     end
     (xmin, xmax), (ymin, ymax), (zmin, zmax)
 end
+
+function in_nearby_region(m::MeshAccretionGeometry{T}, line_element) where {T}
+    p = line_element[2]
+    @inbounds m.x_extent[1] < p[1] < m.x_extent[2] && m.y_extent[1] < p[2] < m.y_extent[2] && m.z_extent[1] < p[3] < m.z_extent[2]
+end 
+
+function has_intersect(m::MeshAccretionGeometry{T}, line_element) where {T}
+    for triangle in m.mesh
+        if jsr_algorithm(triangle..., line_element...)
+            return true
+        end
+    end
+    false
+end
+
+function collision_callback(m::MeshAccretionGeometry{T}) where {T}
+    (u, λ, integrator) -> intersects_geometry(m, cartesian_line_element(u, integrator))
+end
+
+
+export MeshAccretionGeometry
