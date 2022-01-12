@@ -1,9 +1,15 @@
 module AccretionGeometry
 
-import GeodesicTracer: tracegeodesics
+import GeodesicTracer: tracegeodesics, DiscreteCallback
 import GeodesicRendering: rendergeodesics
+import Base: in
 
-include("callbacks.jl")
+using Meshes
+using StaticArrays
+
+include("geometry.jl")
+include("intersections.jl")
+include("meshes.jl")
 
 function tracegeodesics(
     m::AbstractMetricParams{T},
@@ -34,5 +40,10 @@ end
 
 add_collision_callback(::Nothing, accretion_geometry) = collision_callback(accretion_geometry)
 add_collision_callback(callback, accretion_geometry) = (callback..., collision_callback(accretion_geometry))
+
+collision_callback(geometry) = DiscreteCallback(
+    (u, λ, integrator) -> intersects_geometry(geometry, line_element(u, integrator)),
+    i->terminate!(i, retcode=:Intersected)
+)
 
 end # module
