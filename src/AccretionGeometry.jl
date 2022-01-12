@@ -3,19 +3,20 @@ module AccretionGeometry
 import GeodesicTracer: tracegeodesics, DiscreteCallback
 import GeodesicRendering: rendergeodesics
 import Base: in
+import GeometryBasics
 
-using Meshes
+using GeodesicBase
 using StaticArrays
 
 include("geometry.jl")
-include("intersections.jl")
 include("meshes.jl")
+include("intersections.jl")
 
 function tracegeodesics(
     m::AbstractMetricParams{T},
     init_positions,
     init_velocities,
-    time_domain::Tuple{T,T}
+    time_domain::Tuple{T,T},
     accretion_geometry # new argument
     ;
     callback=nothing,
