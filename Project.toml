@@ -1,0 +1,4 @@
+name = "AccretionGeometry"
+uuid = "7f85384a-175b-40eb-971c-1f0b02ab1b9a"
+authors = ["fjebaker <fergusbkr@gmail.com>"]
+version = "0.1.0"
