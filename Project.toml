@@ -2,3 +2,8 @@ name = "AccretionGeometry"
 uuid = "7f85384a-175b-40eb-971c-1f0b02ab1b9a"
 authors = ["fjebaker <fergusbkr@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+GeodesicBase = "1f539516-e6d2-4f24-ab09-50f3ac3c4a5a"
+GeodesicRendering = "dcac253f-9cde-4166-a841-20d11661ef48"
+GeodesicTracer = "1f548346-32cf-4117-8ecc-304cf7418187"
