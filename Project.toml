@@ -1,0 +1,12 @@
+name = "AccretionGeometry"
+uuid = "7f85384a-175b-40eb-971c-1f0b02ab1b9a"
+authors = ["fjebaker <fergusbkr@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+GeodesicBase = "1f539516-e6d2-4f24-ab09-50f3ac3c4a5a"
+GeodesicRendering = "dcac253f-9cde-4166-a841-20d11661ef48"
+GeodesicTracer = "1f548346-32cf-4117-8ecc-304cf7418187"
+GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
+RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
