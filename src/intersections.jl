@@ -4,13 +4,15 @@ function intersects_geometry(m::AbstractAccretionGeometry{T}, line_element) wher
         return has_intersect(m, line_element)
     end
     false
-end 
+end
 
-in_nearby_region(d::AbstractAccretionGeometry{T}, line_element) where {T} = error("Not implemented for $(typeof(d))")
-has_intersect(d::AbstractAccretionGeometry{T}, line_element) where {T} = error("Not implemented for $(typeof(d))")
+in_nearby_region(d::AbstractAccretionGeometry{T}, line_element) where {T} =
+    error("Not implemented for $(typeof(d))")
+has_intersect(d::AbstractAccretionGeometry{T}, line_element) where {T} =
+    error("Not implemented for $(typeof(d))")
 
 # Jiménez, Segura, Feito. Computation Geometry 43 (2010) 474-492
-function jsr_algorithm(V₁::T, V₂::T, V₃::T, Q₁::V, Q₂::V; ϵ=1e-6) where {T, V}
+function jsr_algorithm(V₁::T, V₂::T, V₃::T, Q₁::V, Q₂::V; ϵ = 1e-6) where {T,V}
     A = Q₁ .- V₃
     B = V₁ .- V₃
     C = V₂ .- V₃
@@ -37,7 +39,7 @@ function jsr_algorithm(V₁::T, V₂::T, V₃::T, Q₁::V, Q₂::V; ϵ=1e-6) whe
             W₂ = D × A
             t = W₂ ⋅ C
             t > ϵ && return false
-            u = - W₂ ⋅ B
+            u = -W₂ ⋅ B
             u > ϵ && return false
             -s > t + u && return false
         else

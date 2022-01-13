@@ -1,6 +1,6 @@
 
 struct MeshAccretionGeometry{T} <: AbstractAccretionGeometry{T}
-    mesh::Vector{Tuple{SVector{3,T}, SVector{3,T}, SVector{3,T}}}
+    mesh::Vector{Tuple{SVector{3,T},SVector{3,T},SVector{3,T}}}
     x_extent::Tuple{T,T}
     y_extent::Tuple{T,T}
     z_extent::Tuple{T,T}
@@ -14,18 +14,21 @@ function MeshAccretionGeometry(mesh)
 end
 
 # naive implementation
-function bounding_box(mesh::Union{GeometryBasics.Mesh{3, T}}) where {T}
+function bounding_box(mesh::Union{GeometryBasics.Mesh{3,T}}) where {T}
     bounding_box(T, mesh)
 end
 
-function bounding_box(mesh::Vector{Tuple{SVector{3,T}, SVector{3,T}, SVector{3,T}}}) where {T}
+function bounding_box(mesh::Vector{Tuple{SVector{3,T},SVector{3,T},SVector{3,T}}}) where {T}
     bounding_box(T, mesh)
 end
 
 function bounding_box(T, mesh)
-    xmin = typemax(T) ; xmax = -typemax(T)
-    ymin = typemax(T) ; ymax = -typemax(T)
-    zmin = typemax(T) ; zmax = -typemax(T)
+    xmin = typemax(T)
+    xmax = -typemax(T)
+    ymin = typemax(T)
+    ymax = -typemax(T)
+    zmin = typemax(T)
+    zmax = -typemax(T)
     for t in mesh
         for p in t
             let x = p[1], y = p[2], z = p[3]
@@ -43,12 +46,14 @@ end
 
 function in_nearby_region(m::MeshAccretionGeometry{T}, line_element) where {T}
     p = line_element[2]
-    @inbounds m.x_extent[1] < p[1] < m.x_extent[2] && m.y_extent[1] < p[2] < m.y_extent[2] && m.z_extent[1] < p[3] < m.z_extent[2]
-end 
+    @inbounds m.x_extent[1] < p[1] < m.x_extent[2] &&
+              m.y_extent[1] < p[2] < m.y_extent[2] &&
+              m.z_extent[1] < p[3] < m.z_extent[2]
+end
 
 function has_intersect(m::MeshAccretionGeometry{T}, line_element) where {T}
     for triangle in m.mesh
-        dist_sq = sum((triangle[1] .- line_element[2]).^2)
+        dist_sq = sum((triangle[1] .- line_element[2]) .^ 2)
         if dist_sq < 1e-3 && jsr_algorithm(triangle..., line_element...)
             return true
         end
