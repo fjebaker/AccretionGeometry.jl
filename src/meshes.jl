@@ -14,7 +14,15 @@ function MeshAccretionGeometry(mesh)
 end
 
 # naive implementation
-function bounding_box(mesh::GeometryBasics.Mesh{3, T}) where {T}
+function bounding_box(mesh::Union{GeometryBasics.Mesh{3, T}}) where {T}
+    bounding_box(T, mesh)
+end
+
+function bounding_box(mesh::Vector{Tuple{SVector{3,T}, SVector{3,T}, SVector{3,T}}}) where {T}
+    bounding_box(T, mesh)
+end
+
+function bounding_box(T, mesh)
     xmin = typemax(T) ; xmax = -typemax(T)
     ymin = typemax(T) ; ymax = -typemax(T)
     zmin = typemax(T) ; zmax = -typemax(T)
@@ -40,7 +48,8 @@ end
 
 function has_intersect(m::MeshAccretionGeometry{T}, line_element) where {T}
     for triangle in m.mesh
-        if jsr_algorithm(triangle..., line_element...)
+        dist_sq = sum((triangle[1] .- line_element[2]).^2)
+        if dist_sq < 1e-3 && jsr_algorithm(triangle..., line_element...)
             return true
         end
     end

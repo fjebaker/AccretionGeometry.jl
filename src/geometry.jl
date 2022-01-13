@@ -18,6 +18,10 @@ function cartesian_line_element(u, integrator)
     (to_cartesian(integrator.uprev), to_cartesian(u))
 end
 
+function line_element(u::ArrayPartition{F,T}, integrator) where {F, T}
+    @inbounds (@view(integrator.uprev.x[2][2:4]), @view(u.x[2][2:4]))
+end
+
 function line_element(u, integrator)
-    (integrator.uprev, u)
+    @inbounds (@view(integrator.uprev[2:4]), @view(u[2:4]))
 end
