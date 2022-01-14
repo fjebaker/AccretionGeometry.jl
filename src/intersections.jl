@@ -12,7 +12,7 @@ has_intersect(d::AbstractAccretionGeometry{T}, line_element) where {T} =
     error("Not implemented for $(typeof(d))")
 
 # Jiménez, Segura, Feito. Computation Geometry 43 (2010) 474-492
-function jsr_algorithm(V₁::T, V₂::T, V₃::T, Q₁::V, Q₂::V; ϵ = 1e-6) where {T,V}
+function jsr_algorithm(V₁::T, V₂::T, V₃::T, Q₁::V, Q₂::V; ϵ = 1e-8) where {T,V}
     A = Q₁ .- V₃
     B = V₁ .- V₃
     C = V₂ .- V₃
