@@ -48,13 +48,15 @@ function in_nearby_region(m::MeshAccretionGeometry{T}, line_element) where {T}
     p = line_element[2]
     @inbounds m.x_extent[1] < p[1] < m.x_extent[2] &&
               m.y_extent[1] < p[2] < m.y_extent[2] &&
-              m.z_extent[1] < p[3] < m.z_extent[2]
+              m.z_extent[1] < p[3] < m.z_extent[2] 
 end
 
 function has_intersect(m::MeshAccretionGeometry{T}, line_element) where {T}
     for triangle in m.mesh
-        dist_sq = sum((triangle[1] .- line_element[2]) .^ 2)
-        if dist_sq < 1e-3 && jsr_algorithm(triangle..., line_element...)
+        dist_sq = sum(@.((triangle[1] - line_element[2])^2))
+        # assume line element and mesh triangle are small; check if we're within a 
+        # certain distance before running jsr
+        if dist_sq < 3.0 && jsr_algorithm(triangle..., line_element...)
             return true
         end
     end
